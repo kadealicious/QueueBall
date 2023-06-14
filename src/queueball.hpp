@@ -21,14 +21,19 @@ typedef struct qbCommand
 {
 	unsigned int commandID;
 	unsigned int argCount;
-	void (*commandFnPtr)();
+	union
+	{
+		void (*commandFnPtr)();
+		void (*commandFnPtrArgs)(void*);
+	};
+	
 	// TODO: Allow user to read previous retval here.
 }
 qbCommand;
 
 typedef struct qbCommandArgumentPair
 {
-	void (*commandFnPtr)();
+	qbCommand* command;
 	void* args;
 }
 qbCommandArgumentPair;
@@ -40,8 +45,10 @@ class QueueBall
 		std::deque<qbCommandArgumentPair*> commandDeque;
 	
 	public: 
-		QbResult BindCommand(unsigned int& commandID, void (*commandFnPtr)(), unsigned int argCount);
+		QbResult BindCommand(unsigned int& commandID, void (*commandFnPtr)());
+		QbResult BindCommand(unsigned int& commandID, void (*commandFnPtr)(void*), unsigned int argCount);
 		QbResult UnbindCommand(unsigned int commandID);
+		QbResult RecordCommand(unsigned int commandID);
 		QbResult RecordCommand(unsigned int commandID, void* commandArgs);	// TODO: Allow the user to dequeue specific command calls.
 		QbResult ExecuteCommands();
 
