@@ -2,18 +2,17 @@
 #include"queueball.hpp"
 
 
+QueueBall::QueueBall()
+{
+	this->currentCommandID = 0;
+};
+
 int QueueBall::GetCommandIndex(unsigned int commandID, int low, int high)
 {
 	if(low < 0 || high < 0)
-	{
-		low = 0;
-		high = this->commands.size();
-	}
+		{ low = 0; high = this->commands.size(); }
 	if(this->commands.size() < 1)
-	{
-		std::cout << "ERROR: No commands are currently bound; can't search!" << std::endl;
-		return -1;
-	}
+		{ std::cout << "ERROR: No commands are currently bound; can't search!" << std::endl; return -1; }
 
 	unsigned int middleIndex = (low + high) / 2;
 	unsigned int middleCommandID = this->commands.at(middleIndex).commandID;
@@ -48,35 +47,29 @@ int QueueBall::GetCommandIndex(unsigned int commandID, int low, int high)
 
 QbResult QueueBall::BindCommand(unsigned int& commandID, void (*commandFnPtr)())
 {
-	static unsigned int currentCommandID = 0;
-
 	qbCommand command;
-	command.commandID = currentCommandID;
+	command.commandID = this->currentCommandID;
 	command.commandFnPtr = commandFnPtr;
 	command.argCount = 0;
 	this->commands.push_back(command);
 
-	commandID = currentCommandID;
+	commandID = this->currentCommandID;
 	std::cout << "Bound command w/ ID " << commandID << "!" << std::endl;
-
-	currentCommandID++;
+	this->currentCommandID++;
 	return qbOkay;
 }
 
 QbResult QueueBall::BindCommand(unsigned int& commandID, void (*commandFnPtr)(void*), unsigned int argCount)
 {
-	static unsigned int currentCommandID = 0;
+	qbCommand command;
+	command.commandID = this->currentCommandID;
+	command.commandFnPtrWithArg = commandFnPtr;
+	command.argCount = argCount;
+	this->commands.push_back(command);
 
-	qbCommand commandPair;
-	commandPair.commandID = currentCommandID;
-	commandPair.commandFnPtrArgs = commandFnPtr;
-	commandPair.argCount = argCount;
-
-	this->commands.push_back(commandPair);
-
-	commandID = currentCommandID;
+	commandID = this->currentCommandID;
 	std::cout << "Bound command w/ ID " << commandID << "!" << std::endl;
-	currentCommandID++;
+	this->currentCommandID++;
 	return qbOkay;
 }
 
@@ -133,7 +126,7 @@ QbResult QueueBall::RecordCommand(unsigned int commandID, void* commandArgs)
 		newPair->args = commandArgs;
 		
 		commandDeque.push_back(newPair);
-		std::cout << "Command w/ ID " << commandID << " queued successfully!" << std::endl;
+		std::cout << "Command w/ ID " << commandID << " and " << newPair->command->argCount << " args queued successfully!" << std::endl;
 		return qbOkay;
 	}
 	else
@@ -156,9 +149,9 @@ QbResult QueueBall::ExecuteCommands()
 
 	while(this->commandDeque.size() > 0)
 	{
-		// We pull from the front of the queue to execute commands.
+		// We pull from the front of the deque to execute commands.
 		qbCommandArgumentPair* currentCommand = commandDeque.front();
-		std::cout << "Executing command w/ ID " << currentCommand->command->commandID << ": ";
+		std::cout << "-Executing command w/ ID " << currentCommand->command->commandID << ": " << std::endl;
 		
 		// Execute the command with appropriate arguments (if any).
 		if(commandDeque.front()->command->argCount < 1)
@@ -167,7 +160,8 @@ QbResult QueueBall::ExecuteCommands()
 		}
 		else
 		{
-			// TODO: Do something.
+			// TODO: Make >1 arguments work.
+			currentCommand->command->commandFnPtrWithArg(currentCommand->args);
 		}
 
 		// Remove command from deque and free its memory.
@@ -189,11 +183,21 @@ void QueueBall::PrintCommandDetails(unsigned int commandID)
 		commandFnPtr = &(this->commands.at(commandIndex).commandFnPtr);
 
 		std::cout << "Command w/ ID " << this->commands.at(commandID).commandID;
-		std::cout << " will execute function " << commandFnPtr;
+		std::cout << " will execute function @ " << commandFnPtr;
 		std::cout << " with " << this->commands.at(commandID).argCount << " args." << std::endl;
 	}
 	else
 	{
 		std::cout << "ERROR: Failed to print details for command w/ ID " << commandID << "!" << std::endl;
+	}
+}
+
+void QueueBall::ListQueuedCommands()
+{
+	for(unsigned int i = 0; i < this->commandDeque.size(); i++)
+	{
+		qbCommandArgumentPair* commandArgPair = this->commandDeque.at(i);
+		std::cout << "Command " << i << ": Command ID " << commandArgPair->command->commandID;
+		std::cout << " w/ " << commandArgPair->command->argCount << " args." << std::endl;
 	}
 }

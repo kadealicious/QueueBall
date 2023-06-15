@@ -16,6 +16,9 @@ enum QbResult
 	qbWTF, 
 };
 
+typedef void (*qbFnPtr)(void*);
+typedef void* qbArgPtr;
+
 // Used to pair a command ID with its function in memory.
 typedef struct qbCommand
 {
@@ -24,7 +27,7 @@ typedef struct qbCommand
 	union
 	{
 		void (*commandFnPtr)();
-		void (*commandFnPtrArgs)(void*);
+		void (*commandFnPtrWithArg)(void*);
 	};
 	
 	// TODO: Allow user to read previous retval here.
@@ -43,19 +46,23 @@ class QueueBall
 	private: 
 		std::vector<qbCommand> commands;					// Stores the template command data for each command ID.
 		std::deque<qbCommandArgumentPair*> commandDeque;	// Stores pointers to queued commands along with user-specified arguments.
+		unsigned int currentCommandID;
 	
 	protected: 
 		int GetCommandIndex(unsigned int commandID, int low, int high);	// Uses a binary search to find command in list of template commands.
 	
 	public: 
+		QueueBall();
 		QbResult BindCommand(unsigned int& commandID, void (*commandFnPtr)());
 		QbResult BindCommand(unsigned int& commandID, void (*commandFnPtr)(void*), unsigned int argCount);
+		QbResult BindCommand(unsigned int& commandID, void (*commandFnPtr)(void*, void*), unsigned int argCount);
 		QbResult UnbindCommand(unsigned int commandID);
 		QbResult RecordCommand(unsigned int commandID);
-		QbResult RecordCommand(unsigned int commandID, void* commandArgs);	// TODO: Allow the user to dequeue specific command calls.
+		QbResult RecordCommand(unsigned int commandID, void* commandArgs);	// TODO: Allow the user to "Unrecord" specific command calls.
 		QbResult ExecuteCommands();
 
 		void PrintCommandDetails(unsigned int commandID);
+		void ListQueuedCommands();
 };
 
 
