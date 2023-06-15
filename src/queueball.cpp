@@ -160,7 +160,7 @@ QbResult QueueBall::ExecuteCommands()
 		}
 		else
 		{
-			// TODO: Make >1 arguments work.
+			// TODO: Make >1 arguments work so you don't need to use a struct to pass the arguments.
 			currentCommand->command->commandFnPtrWithArg(currentCommand->args);
 		}
 
@@ -175,7 +175,6 @@ QbResult QueueBall::ExecuteCommands()
 void QueueBall::PrintCommandDetails(unsigned int commandID)
 {
 	// Figure out which command pointer we are talking about.
-	// TODO: Make this use a binary search for < O(N) performance.
 	void *commandFnPtr;
 	int commandIndex = this->GetCommandIndex(commandID, -1, -1);
 	if(commandIndex >= 0)

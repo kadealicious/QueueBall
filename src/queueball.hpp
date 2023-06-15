@@ -55,7 +55,6 @@ class QueueBall
 		QueueBall();
 		QbResult BindCommand(unsigned int& commandID, void (*commandFnPtr)());
 		QbResult BindCommand(unsigned int& commandID, void (*commandFnPtr)(void*), unsigned int argCount);
-		QbResult BindCommand(unsigned int& commandID, void (*commandFnPtr)(void*, void*), unsigned int argCount);
 		QbResult UnbindCommand(unsigned int commandID);
 		QbResult RecordCommand(unsigned int commandID);
 		QbResult RecordCommand(unsigned int commandID, void* commandArgs);	// TODO: Allow the user to "Unrecord" specific command calls.
