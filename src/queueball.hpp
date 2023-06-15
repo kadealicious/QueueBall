@@ -41,8 +41,11 @@ qbCommandArgumentPair;
 class QueueBall
 {
 	private: 
-		std::vector<qbCommand> commands;
-		std::deque<qbCommandArgumentPair*> commandDeque;
+		std::vector<qbCommand> commands;					// Stores the template command data for each command ID.
+		std::deque<qbCommandArgumentPair*> commandDeque;	// Stores pointers to queued commands along with user-specified arguments.
+	
+	protected: 
+		int GetCommandIndex(unsigned int commandID, int low, int high);	// Uses a binary search to find command in list of template commands.
 	
 	public: 
 		QbResult BindCommand(unsigned int& commandID, void (*commandFnPtr)());
