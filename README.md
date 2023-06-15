@@ -10,7 +10,7 @@ via a command ID.
 - Create an instance of the QueueBall class: ```QueueBall qb;```.
 - Create an ```unsigned int``` to hold your function's "command ID".
 - Bind the command to its ID with ```qb.BindCommand(commandID, PtrToMyFunction)```.  If your function has arguments, use this syntax: ```qb.BindCommand(commandID, (qbFnPtr)PtrToMyFunction, argumentCount)```.
-- To add your command to the queue, call ```qb.RecordCommand(commandID)```.  If your function has arguments, use this syntax: ```qb.RecordCommand(commandID, (qbArgPtr)(&myArgument0, &myArgument1))```.
+- To add your command to the queue, call ```qb.RecordCommand(commandID)```.  If your function has arguments, use this syntax: ```qb.RecordCommand(commandID, (qbArgPtr)(&MyArgument))``` OR ```qb.RecordCommand(commandID, (qbArgPtr)(&StructContainingMyArguments))```.
 - Execute all recorded commands with ```qb.ExecuteCommands()```.
 - To unbind a command, call ```qb.UnbindCommand(commandID)```.
 
