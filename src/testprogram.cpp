@@ -34,8 +34,8 @@ int main(int argc, char* argv[])
 	queueBall.PrintCommandDetails(PrintArgumentAsCStringCommandID);
 
 	queueBall.RecordCommand(printHelloWorldCommandID);									// Test record with 0 args.
-	queueBall.RecordCommand(PrintArgumentAsStringCommandID, (qbArgPtr)(&testString));	// Test record with 1 arg.
 	queueBall.RecordCommand(PrintArgumentAsCStringCommandID, (qbArgPtr)(&testStruct));	// Test record with 2 args.
+	queueBall.RecordCommand(PrintArgumentAsStringCommandID, (qbArgPtr)(&testString));	// Test record with 1 arg.
 
 	queueBall.ListQueuedCommands();
 
