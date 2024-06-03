@@ -30,5 +30,5 @@ Github repo:	[github.com/kadealicious/QueueBall](https://github.com/kadealicious
 **Technical Notes**
 - Each command that is bound is stored in a vector of ```QbCommand``` structs.  When commands are queued, the pointer to each recorded ```QbCommand``` is stored in a vector which also stores the newly specified arguments for the command record.  When the commands are executed, their functions and arguments are then executed sequentially from the queue (implemented as a deque to allow for binary search in ```RecordCommand()```).
 - ```BindCommand()``` & ```UnbindCommand()``` are executed in average O(1) time, ```RecordCommand()``` in average O(log N), and ```ExecuteCommands()``` in average O(N).
-- Because ```ExecuteCommands()``` must by nature traverse through each executed command in order, it must take the longest time to execute in theory.
+- Because ```ExecuteCommands()``` must by nature traverse through each executed command in order, it executes in O(N) time.
 - ```RecordCommand()``` uses a binary search, so I was able to get the search time down to O(log N).
